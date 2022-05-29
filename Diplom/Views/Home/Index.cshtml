@@ -1,0 +1,26 @@
+﻿@model IEnumerable<StartupArticle>
+@{
+
+}
+<h2>Home Page</h2>
+
+<div>
+    <ul>
+        @foreach(var startup in Model)
+        {
+            <li>
+                <a asp-controller="Home" asp-action="Startup" asp-route-id="@startup.Id">
+                    @startup.Title
+                </a>
+                -
+                <a asp-controller="Home" asp-action="Edit" asp-route-id="@startup.Id">
+                    Edit
+                </a>
+                -
+                <a asp-controller="Home" asp-action="Remove" asp-route-id="@startup.Id">
+                    Remove
+                </a>
+            </li>
+        }
+    </ul>
+</div>
