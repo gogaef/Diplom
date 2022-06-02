@@ -3,7 +3,7 @@
 
 }
 <h2>Home Page</h2>
-
+<img src="~/content/static/Label-brochure-1.jpg" width="500" />
 <div>
     <ul>
         @foreach(var startup in Model)
@@ -11,14 +11,6 @@
             <li>
                 <a asp-controller="Home" asp-action="Startup" asp-route-id="@startup.Id">
                     @startup.Title
-                </a>
-                -
-                <a asp-controller="Home" asp-action="Edit" asp-route-id="@startup.Id">
-                    Edit
-                </a>
-                -
-                <a asp-controller="Home" asp-action="Remove" asp-route-id="@startup.Id">
-                    Remove
                 </a>
             </li>
         }

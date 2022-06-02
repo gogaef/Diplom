@@ -3,6 +3,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Linq;
 
 namespace Diplom
@@ -13,28 +14,38 @@ namespace Diplom
         {
             var host = CreateWebHostBuilder(args).Build();
 
-            var scope = host.Services.CreateScope();
-
-            var ctx = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var userMngr = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-            var roleMngr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-            ctx.Database.EnsureCreated();
-
-            var adminRole = new IdentityRole("Admin");
-            if (!ctx.Roles.Any())
+            try
             {
-                roleMngr.CreateAsync(adminRole).GetAwaiter().GetResult();
-            }
+                var scope = host.Services.CreateScope();
 
-            if (!ctx.Users.Any(u => u.UserName == "administrator"))
-            {
-                var adminUser = new IdentityUser
+                var ctx = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                var userMngr = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+                var roleMngr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+                ctx.Database.EnsureCreated();
+
+                var adminRole = new IdentityRole("Admin");
+                if (!ctx.Roles.Any())
                 {
-                    UserName = "administrator",
-                    Email = "4NUOfficial@gmail.com"
-                };
+                    roleMngr.CreateAsync(adminRole).GetAwaiter().GetResult();
+                }
+
+                if (!ctx.Users.Any(u => u.UserName == "administrator"))
+                {
+                    var adminUser = new IdentityUser
+                    {
+                        UserName = "administrator",
+                        Email = "4NUOfficial@gmail.com"
+                    };
+                    var result = userMngr.CreateAsync(adminUser, "password").GetAwaiter().GetResult();
+                    userMngr.AddToRoleAsync(adminUser, adminRole.Name).GetAwaiter().GetResult();
+                }
             }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            
             host.Run();
         }
 
